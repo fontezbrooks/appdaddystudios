@@ -1,0 +1,85 @@
+--color-beige-50: #f7f7ed;
+--color-beige-100: #f0f0db;
+--color-beige-200: #e0e0b8;
+--color-beige-300: #d1d194;
+--color-beige-400: #c2c270;
+--color-beige-500: #b2b34d;
+--color-beige-600: #8f8f3d;
+--color-beige-700: #6b6b2e;
+--color-beige-800: #47471f;
+--color-beige-900: #24240f;
+--color-beige-950: #19190b;
+
+--color-honey-bronze-50: #fcf4e8;
+--color-honey-bronze-100: #faead1;
+--color-honey-bronze-200: #f4d4a4;
+--color-honey-bronze-300: #efbf76;
+--color-honey-bronze-400: #eaa948;
+--color-honey-bronze-500: #e4941b;
+--color-honey-bronze-600: #b77615;
+--color-honey-bronze-700: #895910;
+--color-honey-bronze-800: #5b3b0b;
+--color-honey-bronze-900: #2e1e05;
+--color-honey-bronze-950: #201504;
+
+--color-faded-copper-50: #f7f2ee;
+--color-faded-copper-100: #efe6dc;
+--color-faded-copper-200: #dfccb9;
+--color-faded-copper-300: #cfb396;
+--color-faded-copper-400: #bf9973;
+--color-faded-copper-500: #af8050;
+--color-faded-copper-600: #8c6640;
+--color-faded-copper-700: #694d30;
+--color-faded-copper-800: #463320;
+--color-faded-copper-900: #231a10;
+--color-faded-copper-950: #18120b;
+
+--color-palm-leaf-50: #f5f5ef;
+--color-palm-leaf-100: #ebecdf;
+--color-palm-leaf-200: #d8d8c0;
+--color-palm-leaf-300: #c4c5a0;
+--color-palm-leaf-400: #b1b181;
+--color-palm-leaf-500: #9d9e61;
+--color-palm-leaf-600: #7e7e4e;
+--color-palm-leaf-700: #5e5f3a;
+--color-palm-leaf-800: #3f3f27;
+--color-palm-leaf-900: #1f2013;
+--color-palm-leaf-950: #16160e;
+
+--color-porcelain-50: #f8f6ed;
+--color-porcelain-100: #f1ecda;
+--color-porcelain-200: #e3dab5;
+--color-porcelain-300: #d5c790;
+--color-porcelain-400: #c7b56b;
+--color-porcelain-500: #b9a246;
+--color-porcelain-600: #948238;
+--color-porcelain-700: #6f612a;
+--color-porcelain-800: #4a411c;
+--color-porcelain-900: #25200e;
+--color-porcelain-950: #1a170a;
+
+--color-ash-grey-50: #f3f3f1;
+--color-ash-grey-100: #e7e7e4;
+--color-ash-grey-200: #cfcfc9;
+--color-ash-grey-300: #b7b7ae;
+--color-ash-grey-400: #9f9f93;
+--color-ash-grey-500: #878778;
+--color-ash-grey-600: #6c6c60;
+--color-ash-grey-700: #515148;
+--color-ash-grey-800: #363630;
+--color-ash-grey-900: #1b1b18;
+--color-ash-grey-950: #131311;
+
+--color-air-force-blue-50: #eff3f6;
+--color-air-force-blue-100: #dee8ed;
+--color-air-force-blue-200: #bdd0db;
+--color-air-force-blue-300: #9cb9c9;
+--color-air-force-blue-400: #7ba2b7;
+--color-air-force-blue-500: #5b8ba4;
+--color-air-force-blue-600: #486f84;
+--color-air-force-blue-700: #365363;
+--color-air-force-blue-800: #243742;
+--color-air-force-blue-900: #121c21;
+--color-air-force-blue-950: #0d1317;
+
+

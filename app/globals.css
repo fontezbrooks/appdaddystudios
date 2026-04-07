@@ -1,0 +1,259 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* =========================================================================
+ * APP DADDY STUDIOS — DESIGN TOKEN SYSTEM
+ *
+ * Three layers:
+ *   1. PRIMITIVES    — raw values from docs/tailwind-v4-colors.md
+ *   2. SEMANTIC      — role-based tokens that flip between light and dark
+ *   3. SHADCN CONTRACT — the CSS variables shadcn components consume
+ *
+ * Rule: components reference layer 3 (or layer 2 for custom surfaces) only.
+ * Never reference layer 1 primitives directly in components.
+ *
+ * To add/remove a token: edit this file only.
+ * ========================================================================= */
+
+/* -------------------------------------------------------------------------
+ * LAYER 1: PRIMITIVES (from docs/tailwind-v4-colors.md)
+ *
+ * Exposed as Tailwind v4 theme colors via @theme so they're available as
+ * utility classes (e.g. bg-ash-grey-50, text-honey-bronze-500). Use these
+ * only inside the semantic layer below, or for one-off brand surfaces.
+ * ------------------------------------------------------------------------- */
+@theme {
+  /* ash-grey — neutral foundation (matches logo's native warm grey) */
+  --color-ash-grey-50: #f3f3f1;
+  --color-ash-grey-100: #e7e7e4;
+  --color-ash-grey-200: #cfcfc9;
+  --color-ash-grey-300: #b7b7ae;
+  --color-ash-grey-400: #9f9f93;
+  --color-ash-grey-500: #878778;
+  --color-ash-grey-600: #6c6c60;
+  --color-ash-grey-700: #515148;
+  --color-ash-grey-800: #363630;
+  --color-ash-grey-900: #1b1b18;
+  --color-ash-grey-950: #131311;
+
+  /* honey-bronze — brand accent ("brass toggle, one tap") */
+  --color-honey-bronze-50: #fcf4e8;
+  --color-honey-bronze-100: #faead1;
+  --color-honey-bronze-200: #f4d4a4;
+  --color-honey-bronze-300: #efbf76;
+  --color-honey-bronze-400: #eaa948;
+  --color-honey-bronze-500: #e4941b;
+  --color-honey-bronze-600: #b77615;
+  --color-honey-bronze-700: #895910;
+  --color-honey-bronze-800: #5b3b0b;
+  --color-honey-bronze-900: #2e1e05;
+  --color-honey-bronze-950: #201504;
+
+  /* Typography — literal names (NOT var() — Tailwind v4 @theme resolves
+     at parse time, so next/font runtime variables would resolve to nothing).
+     The next/font className on <html> provides the "Geist" family itself. */
+  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace,
+    SFMono-Regular, monospace;
+  --font-heading: "Geist", "Geist Fallback", ui-sans-serif, system-ui,
+    sans-serif;
+
+  /* Motion — source of truth for CSS + framer-motion (see lib/tokens.ts) */
+  --duration-instant: 0ms;
+  --duration-fast: 150ms;
+  --duration-base: 300ms;
+  --duration-slow: 600ms;
+  --duration-entrance: 700ms;
+
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* -------------------------------------------------------------------------
+ * LAYER 2: SHADCN BRIDGE (@theme inline)
+ *
+ * Maps the :root CSS variables (defined below) to Tailwind v4's color utility
+ * class names. This is what makes `bg-background`, `text-foreground`,
+ * `border-border`, `bg-primary`, etc. actually compile.
+ *
+ * Using `@theme inline` (not `@theme`) so the var() references resolve at
+ * runtime — that's how light/dark mode flipping works without recompiling.
+ * ------------------------------------------------------------------------- */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+}
+
+/* -------------------------------------------------------------------------
+ * LAYER 3: SHADCN CONTRACT (light mode)
+ *
+ * Every shadcn component reads from these CSS variables. We alias them to
+ * our semantic roles, which in turn reference the primitives above.
+ *
+ * To swap the brand palette, edit only this block and its .dark twin.
+ * ------------------------------------------------------------------------- */
+:root {
+  /* -----------------------------------------------------------------
+   * TEMPORARY (2026-04-07): page background pinned to the logo's baked
+   * cream (#F5F4F1) so the logo's built-in background rect blends
+   * seamlessly with the page. Revert to `var(--color-ash-grey-50)`
+   * once a proper transparent vector logo replaces the raster trace.
+   * See scripts/prepare-logo.ts for the matching workaround.
+   * ----------------------------------------------------------------- */
+  --background: #f5f4f1;
+  --foreground: var(--color-ash-grey-950); /* body text */
+
+  --card: var(--color-ash-grey-50);
+  --card-foreground: var(--color-ash-grey-950);
+
+  --popover: var(--color-ash-grey-50);
+  --popover-foreground: var(--color-ash-grey-950);
+
+  /* Brand accent — honey-bronze is the "primary" in shadcn terms */
+  --primary: var(--color-honey-bronze-500);
+  --primary-foreground: var(--color-ash-grey-50);
+
+  --secondary: var(--color-ash-grey-100);
+  --secondary-foreground: var(--color-ash-grey-900);
+
+  --muted: var(--color-ash-grey-100);
+  --muted-foreground: var(--color-ash-grey-600);
+
+  --accent: var(--color-honey-bronze-50);
+  --accent-foreground: var(--color-honey-bronze-800);
+
+  --destructive: #b42318; /* hand-picked — palette has no red family */
+
+  --border: var(--color-ash-grey-200);
+  --input: var(--color-ash-grey-200);
+  --ring: var(--color-honey-bronze-500);
+
+  /* Chart scale (unused in V1, but wired so future charts inherit) */
+  --chart-1: var(--color-honey-bronze-500);
+  --chart-2: var(--color-ash-grey-600);
+  --chart-3: var(--color-honey-bronze-700);
+  --chart-4: var(--color-ash-grey-400);
+  --chart-5: var(--color-honey-bronze-300);
+
+  /* Radius scale — shadcn convention, multiplicative */
+  --radius: 0.625rem;
+
+  /* Sidebar tokens — unused in V1, wired for future dashboards */
+  --sidebar: var(--color-ash-grey-100);
+  --sidebar-foreground: var(--color-ash-grey-900);
+  --sidebar-primary: var(--color-honey-bronze-500);
+  --sidebar-primary-foreground: var(--color-ash-grey-50);
+  --sidebar-accent: var(--color-ash-grey-200);
+  --sidebar-accent-foreground: var(--color-ash-grey-900);
+  --sidebar-border: var(--color-ash-grey-200);
+  --sidebar-ring: var(--color-honey-bronze-500);
+}
+
+/* -------------------------------------------------------------------------
+ * LAYER 3: SHADCN CONTRACT (dark mode)
+ * ------------------------------------------------------------------------- */
+.dark {
+  --background: var(--color-ash-grey-950);
+  --foreground: var(--color-ash-grey-50);
+
+  --card: var(--color-ash-grey-900);
+  --card-foreground: var(--color-ash-grey-50);
+
+  --popover: var(--color-ash-grey-900);
+  --popover-foreground: var(--color-ash-grey-50);
+
+  --primary: var(--color-honey-bronze-400);
+  --primary-foreground: var(--color-ash-grey-950);
+
+  --secondary: var(--color-ash-grey-800);
+  --secondary-foreground: var(--color-ash-grey-50);
+
+  --muted: var(--color-ash-grey-800);
+  --muted-foreground: var(--color-ash-grey-400);
+
+  --accent: var(--color-honey-bronze-950);
+  --accent-foreground: var(--color-honey-bronze-200);
+
+  --destructive: #f04438;
+
+  --border: var(--color-ash-grey-800);
+  --input: var(--color-ash-grey-800);
+  --ring: var(--color-honey-bronze-400);
+
+  --chart-1: var(--color-honey-bronze-400);
+  --chart-2: var(--color-ash-grey-400);
+  --chart-3: var(--color-honey-bronze-300);
+  --chart-4: var(--color-ash-grey-500);
+  --chart-5: var(--color-honey-bronze-500);
+
+  --sidebar: var(--color-ash-grey-900);
+  --sidebar-foreground: var(--color-ash-grey-50);
+  --sidebar-primary: var(--color-honey-bronze-400);
+  --sidebar-primary-foreground: var(--color-ash-grey-950);
+  --sidebar-accent: var(--color-ash-grey-800);
+  --sidebar-accent-foreground: var(--color-ash-grey-50);
+  --sidebar-border: var(--color-ash-grey-800);
+  --sidebar-ring: var(--color-honey-bronze-400);
+}
+
+/* -------------------------------------------------------------------------
+ * BASE STYLES
+ * ------------------------------------------------------------------------- */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans antialiased;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
