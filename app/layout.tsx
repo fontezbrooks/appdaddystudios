@@ -34,26 +34,14 @@ export const viewport: Viewport = {
   ],
 };
 
-/**
- * Dark-mode detection runs before first paint to prevent FOUC.
- * Reads prefers-color-scheme and toggles `.dark` on <html>.
- * No UI toggle in V1 — respects OS preference only.
- *
- * TEMPORARY (2026-04-07): Dark mode is suppressed while the logo is a
- * raster trace with a baked cream background. A dark page with a cream
- * logo rectangle looks worse than no dark mode. The script is kept
- * (commented below) so re-enabling is a one-line change once a proper
- * vector logo arrives. See scripts/prepare-logo.ts and globals.css for
- * the matching workarounds.
- */
-// const themeBootstrapScript = `
-// (function() {
-//   try {
-//     var mq = window.matchMedia('(prefers-color-scheme: dark)');
-//     if (mq.matches) document.documentElement.classList.add('dark');
-//   } catch (_) {}
-// })();
-// `.trim();
+const themeBootstrapScript = `
+(function() {
+  try {
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    if (mq.matches) document.documentElement.classList.add('dark');
+  } catch (_) {}
+})();
+`.trim();
 
 export default function RootLayout({
   children,
@@ -64,7 +52,11 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full`}
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
+      </head>
       <body className="min-h-full antialiased">{children}</body>
     </html>
   );
