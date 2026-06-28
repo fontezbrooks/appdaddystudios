@@ -206,7 +206,7 @@
  * LAYER 3: SHADCN CONTRACT (dark mode)
  * ------------------------------------------------------------------------- */
 .dark {
-  --background: var(--color-ash-grey-950);
+  --background: var(--color-oreo);
   --foreground: var(--color-ash-grey-50);
 
   --card: var(--color-ash-grey-900);
