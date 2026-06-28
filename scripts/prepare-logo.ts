@@ -1,7 +1,7 @@
 /**
  * Build-time SVG transform.
  *
- * Reads the source logo from `public/logos/logo-ads-stacked-barney.svg`,
+ * Reads the source logo from `public/logos/logo-ads-stacked-white.svg`,
  * strips the source `<svg>` wrapper, and emits a transparent React component
  * at `components/brand/LogoMark.tsx`.
  *
@@ -15,7 +15,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { toReactComponent } from "./transform-logo";
 
-const SOURCE_SVG = resolve(process.cwd(), "public/logos/logo-ads-stacked-barney.svg");
+const SOURCE_SVG = resolve(process.cwd(), "public/logos/logo-ads-stacked-white.svg");
 const OUTPUT_TSX = resolve(process.cwd(), "components/brand/LogoMark.tsx");
 
 function main(): void {
