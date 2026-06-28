@@ -52,14 +52,13 @@
   --color-honey-bronze-900: #2e1e05;
   --color-honey-bronze-950: #201504;
 
-  /* Typography — literal names (NOT var() — Tailwind v4 @theme resolves
-     at parse time, so next/font runtime variables would resolve to nothing).
-     The next/font className on <html> provides the "Geist" family itself. */
-  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace,
-    SFMono-Regular, monospace;
-  --font-heading: "Geist", "Geist Fallback", ui-sans-serif, system-ui,
-    sans-serif;
+  /* Typography
+     CSS variable references (var(--font-*)) work here because @theme inline
+     resolves at runtime. The next/font classNames on <html> inject the actual
+     font-face; these stacks reference those injected variables. */
+  --font-sans: var(--font-inter), "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-ozik), "OZIK", ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-vulf), "Vulf Mono", ui-monospace, monospace;
 
   /* Motion — source of truth for CSS + framer-motion (see lib/tokens.ts) */
   --duration-instant: 0ms;
