@@ -8,66 +8,93 @@
  * APP DADDY STUDIOS — DESIGN TOKEN SYSTEM
  *
  * Three layers:
- *   1. PRIMITIVES    — raw values from docs/tailwind-v4-colors.md
- *   2. SEMANTIC      — role-based tokens that flip between light and dark
+ *   1. PRIMITIVES    — raw values from the ADS brand color system
+ *   2. BRIDGE        — maps :root vars to Tailwind v4 utility class names
  *   3. SHADCN CONTRACT — the CSS variables shadcn components consume
  *
- * Rule: components reference layer 3 (or layer 2 for custom surfaces) only.
- * Never reference layer 1 primitives directly in components.
+ * Rule: components reference layer 3 semantic names only (bg-background,
+ * text-foreground, etc.). Never hardcode hex. Never use primitive token
+ * names directly in components.
  *
  * To add/remove a token: edit this file only.
  * ========================================================================= */
 
 /* -------------------------------------------------------------------------
- * LAYER 1: PRIMITIVES (from docs/tailwind-v4-colors.md)
+ * LAYER 1: PRIMITIVES
  *
- * Exposed as Tailwind v4 theme colors via @theme so they're available as
- * utility classes (e.g. bg-ash-grey-50, text-honey-bronze-500). Use these
- * only inside the semantic layer below, or for one-off brand surfaces.
+ * Full ADS color system. Available as Tailwind utility classes:
+ *   bg-orange-400, text-purple-400, border-neutral-300, etc.
+ * Use these only inside layer 3 below, or for one-off brand surfaces.
  * ------------------------------------------------------------------------- */
 @theme {
-  /* brand palette */
+  /* ── Brand aliases (flat, no scale) ── */
   --color-barney: #620b49;
   --color-peach: #ffd5a8;
   --color-pumpkin: #f88000;
   --color-royal: #491e3d;
   --color-oreo: #311e09;
+  --color-white: #ffffff;
+  --color-black: #000000;
 
-  /* ash-grey — neutral foundation (matches logo's native warm grey) */
-  --color-ash-grey-50: #f3f3f1;
-  --color-ash-grey-100: #e7e7e4;
-  --color-ash-grey-200: #cfcfc9;
-  --color-ash-grey-300: #b7b7ae;
-  --color-ash-grey-400: #9f9f93;
-  --color-ash-grey-500: #878778;
-  --color-ash-grey-600: #6c6c60;
-  --color-ash-grey-700: #515148;
-  --color-ash-grey-800: #363630;
-  --color-ash-grey-900: #1b1b18;
-  --color-ash-grey-950: #131311;
+  /* ── Neutrals ── */
+  --color-neutral-100: #f6f6f5;
+  --color-neutral-200: #f2f0f0;
+  --color-neutral-300: #e5e4e4;
+  --color-neutral-400: #cccac9;
+  --color-neutral-500: #a09f9f;
+  --color-neutral-600: #757371;
+  --color-neutral-700: #302b27;
+  --color-neutral-800: #25201b;
+  --color-neutral-900: #1b1715;
 
-  /* honey-bronze — brand accent ("brass toggle, one tap") */
-  --color-honey-bronze-50: #fcf4e8;
-  --color-honey-bronze-100: #faead1;
-  --color-honey-bronze-200: #f4d4a4;
-  --color-honey-bronze-300: #efbf76;
-  --color-honey-bronze-400: #eaa948;
-  --color-honey-bronze-500: #e4941b;
-  --color-honey-bronze-600: #b77615;
-  --color-honey-bronze-700: #895910;
-  --color-honey-bronze-800: #5b3b0b;
-  --color-honey-bronze-900: #2e1e05;
-  --color-honey-bronze-950: #201504;
+  /* ── Orange (Peach → Pumpkin → Dark) ── */
+  --color-orange-100: #fff2e3;
+  --color-orange-200: #ffd5a8; /* = Peach */
+  --color-orange-300: #fdaf5b;
+  --color-orange-400: #f88000; /* = Pumpkin */
+  --color-orange-500: #9b550a;
+  --color-orange-600: #412302;
 
-  /* Typography
-     CSS variable references (var(--font-*)) work here because @theme inline
-     resolves at runtime. The next/font classNames on <html> inject the actual
-     font-face; these stacks reference those injected variables. */
+  /* ── Purple (Light → Barney → Royal → Dark) ── */
+  --color-purple-100: #fff1fb;
+  --color-purple-200: #da80cd;
+  --color-purple-300: #a3558c;
+  --color-purple-400: #620b49; /* = Barney */
+  --color-purple-500: #491e3d; /* = Royal */
+  --color-purple-600: #352530;
+
+  /* ── Brown (Light → Oreo → Dark) ── */
+  --color-brown-100: #f6efeb;
+  --color-brown-200: #dcb193;
+  --color-brown-300: #8b734e;
+  --color-brown-400: #4d3c29;
+  --color-brown-500: #311e09; /* = Oreo */
+  --color-brown-600: #1e1102;
+
+  /* ── Green ── */
+  --color-green-100: #f5fce2;
+  --color-green-200: #dceea0;
+  --color-green-300: #c8e37a;
+  --color-green-400: #9cc725;
+  --color-green-500: #658900;
+  --color-green-600: #26300b;
+
+  /* ── Red ── */
+  --color-red-100: #fff0ee;
+  --color-red-200: #fa9887;
+  --color-red-300: #ea4e37;
+  --color-red-400: #e32c10;
+  --color-red-500: #b42611;
+  --color-red-600: #5e0c00;
+
+  /* ── Typography ──
+     var() refs work here because @theme inline resolves at runtime.
+     next/font classNames on <html> inject the actual font-face. */
   --font-sans: var(--font-inter), "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-heading: var(--font-ozik), "OZIK", ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-vulf), "Vulf Mono", ui-monospace, monospace;
 
-  /* Motion — source of truth for CSS + framer-motion (see lib/tokens.ts) */
+  /* ── Motion — source of truth for CSS + framer-motion (see lib/tokens.ts) ── */
   --duration-instant: 0ms;
   --duration-fast: 150ms;
   --duration-base: 300ms;
@@ -81,12 +108,10 @@
 /* -------------------------------------------------------------------------
  * LAYER 2: SHADCN BRIDGE (@theme inline)
  *
- * Maps the :root CSS variables (defined below) to Tailwind v4's color utility
- * class names. This is what makes `bg-background`, `text-foreground`,
- * `border-border`, `bg-primary`, etc. actually compile.
- *
- * Using `@theme inline` (not `@theme`) so the var() references resolve at
- * runtime — that's how light/dark mode flipping works without recompiling.
+ * Maps the :root CSS variables (defined below) to Tailwind v4 utility
+ * class names. This is what makes bg-background, text-foreground, etc.
+ * compile. Using @theme inline (not @theme) so var() refs resolve at
+ * runtime — that's how light/dark flipping works without recompiling.
  * ------------------------------------------------------------------------- */
 @theme inline {
   --color-background: var(--background);
@@ -138,115 +163,99 @@
 }
 
 /* -------------------------------------------------------------------------
- * LAYER 3: SHADCN CONTRACT (light mode)
- *
- * Every shadcn component reads from these CSS variables. We alias them to
- * our semantic roles, which in turn reference the primitives above.
- *
- * To swap the brand palette, edit only this block and its .dark twin.
+ * LAYER 3: SHADCN CONTRACT — light mode (default)
  * ------------------------------------------------------------------------- */
 :root {
-  /* -----------------------------------------------------------------
-   * TEMPORARY (2026-04-07): page background pinned to the logo's baked
-   * cream (#F5F4F1) so the logo's built-in background rect blends
-   * seamlessly with the page. Revert to `var(--color-ash-grey-50)`
-   * once a proper transparent vector logo replaces the raster trace.
-   * See scripts/prepare-logo.ts for the matching workaround.
-   * ----------------------------------------------------------------- */
   --background: var(--color-oreo);
-  --foreground: var(--color-peach);
+  --foreground: var(--color-orange-200); /* Peach on Oreo */
 
-  --card: var(--color-ash-grey-50);
-  --card-foreground: var(--color-ash-grey-950);
+  --card: var(--color-brown-400);
+  --card-foreground: var(--color-neutral-100);
 
-  --popover: var(--color-ash-grey-50);
-  --popover-foreground: var(--color-ash-grey-950);
+  --popover: var(--color-brown-400);
+  --popover-foreground: var(--color-neutral-100);
 
-  /* Brand accent — honey-bronze is the "primary" in shadcn terms */
-  --primary: var(--color-honey-bronze-500);
-  --primary-foreground: var(--color-ash-grey-50);
+  --primary: var(--color-orange-400); /* Pumpkin */
+  --primary-foreground: var(--color-white);
 
-  --secondary: var(--color-ash-grey-100);
-  --secondary-foreground: var(--color-ash-grey-900);
+  --secondary: var(--color-brown-400);
+  --secondary-foreground: var(--color-orange-200);
 
-  --muted: var(--color-ash-grey-100);
-  --muted-foreground: var(--color-ash-grey-600);
+  --muted: var(--color-brown-400);
+  --muted-foreground: var(--color-neutral-500);
 
-  --accent: var(--color-honey-bronze-50);
-  --accent-foreground: var(--color-honey-bronze-800);
+  --accent: var(--color-purple-400); /* Barney */
+  --accent-foreground: var(--color-purple-100);
 
-  --destructive: #b42318; /* hand-picked — palette has no red family */
+  --destructive: var(--color-red-400);
 
-  --border: var(--color-ash-grey-200);
-  --input: var(--color-ash-grey-200);
-  --ring: var(--color-honey-bronze-500);
+  --border: var(--color-brown-400);
+  --input: var(--color-brown-400);
+  --ring: var(--color-orange-400);
 
-  /* Chart scale (unused in V1, but wired so future charts inherit) */
-  --chart-1: var(--color-honey-bronze-500);
-  --chart-2: var(--color-ash-grey-600);
-  --chart-3: var(--color-honey-bronze-700);
-  --chart-4: var(--color-ash-grey-400);
-  --chart-5: var(--color-honey-bronze-300);
+  --chart-1: var(--color-orange-400);
+  --chart-2: var(--color-purple-400);
+  --chart-3: var(--color-orange-300);
+  --chart-4: var(--color-purple-300);
+  --chart-5: var(--color-orange-200);
 
-  /* Radius scale — shadcn convention, multiplicative */
   --radius: 0.625rem;
 
-  /* Sidebar tokens — unused in V1, wired for future dashboards */
-  --sidebar: var(--color-ash-grey-100);
-  --sidebar-foreground: var(--color-ash-grey-900);
-  --sidebar-primary: var(--color-honey-bronze-500);
-  --sidebar-primary-foreground: var(--color-ash-grey-50);
-  --sidebar-accent: var(--color-ash-grey-200);
-  --sidebar-accent-foreground: var(--color-ash-grey-900);
-  --sidebar-border: var(--color-ash-grey-200);
-  --sidebar-ring: var(--color-honey-bronze-500);
+  --sidebar: var(--color-brown-600);
+  --sidebar-foreground: var(--color-neutral-100);
+  --sidebar-primary: var(--color-orange-400);
+  --sidebar-primary-foreground: var(--color-white);
+  --sidebar-accent: var(--color-brown-500);
+  --sidebar-accent-foreground: var(--color-orange-200);
+  --sidebar-border: var(--color-brown-400);
+  --sidebar-ring: var(--color-orange-400);
 }
 
 /* -------------------------------------------------------------------------
- * LAYER 3: SHADCN CONTRACT (dark mode)
+ * LAYER 3: SHADCN CONTRACT — dark mode
  * ------------------------------------------------------------------------- */
 .dark {
   --background: var(--color-oreo);
-  --foreground: var(--color-ash-grey-50);
+  --foreground: var(--color-orange-200); /* Peach on Oreo */
 
-  --card: var(--color-ash-grey-900);
-  --card-foreground: var(--color-ash-grey-50);
+  --card: var(--color-brown-400);
+  --card-foreground: var(--color-neutral-100);
 
-  --popover: var(--color-ash-grey-900);
-  --popover-foreground: var(--color-ash-grey-50);
+  --popover: var(--color-brown-400);
+  --popover-foreground: var(--color-neutral-100);
 
-  --primary: var(--color-honey-bronze-400);
-  --primary-foreground: var(--color-ash-grey-950);
+  --primary: var(--color-orange-400);
+  --primary-foreground: var(--color-white);
 
-  --secondary: var(--color-ash-grey-800);
-  --secondary-foreground: var(--color-ash-grey-50);
+  --secondary: var(--color-brown-400);
+  --secondary-foreground: var(--color-orange-200);
 
-  --muted: var(--color-ash-grey-800);
-  --muted-foreground: var(--color-ash-grey-400);
+  --muted: var(--color-brown-400);
+  --muted-foreground: var(--color-neutral-500);
 
-  --accent: var(--color-honey-bronze-950);
-  --accent-foreground: var(--color-honey-bronze-200);
+  --accent: var(--color-purple-400);
+  --accent-foreground: var(--color-purple-100);
 
-  --destructive: #f04438;
+  --destructive: var(--color-red-300);
 
-  --border: var(--color-ash-grey-800);
-  --input: var(--color-ash-grey-800);
-  --ring: var(--color-honey-bronze-400);
+  --border: var(--color-brown-400);
+  --input: var(--color-brown-400);
+  --ring: var(--color-orange-400);
 
-  --chart-1: var(--color-honey-bronze-400);
-  --chart-2: var(--color-ash-grey-400);
-  --chart-3: var(--color-honey-bronze-300);
-  --chart-4: var(--color-ash-grey-500);
-  --chart-5: var(--color-honey-bronze-500);
+  --chart-1: var(--color-orange-400);
+  --chart-2: var(--color-purple-400);
+  --chart-3: var(--color-orange-300);
+  --chart-4: var(--color-purple-300);
+  --chart-5: var(--color-orange-200);
 
-  --sidebar: var(--color-ash-grey-900);
-  --sidebar-foreground: var(--color-ash-grey-50);
-  --sidebar-primary: var(--color-honey-bronze-400);
-  --sidebar-primary-foreground: var(--color-ash-grey-950);
-  --sidebar-accent: var(--color-ash-grey-800);
-  --sidebar-accent-foreground: var(--color-ash-grey-50);
-  --sidebar-border: var(--color-ash-grey-800);
-  --sidebar-ring: var(--color-honey-bronze-400);
+  --sidebar: var(--color-brown-600);
+  --sidebar-foreground: var(--color-neutral-100);
+  --sidebar-primary: var(--color-orange-400);
+  --sidebar-primary-foreground: var(--color-white);
+  --sidebar-accent: var(--color-brown-500);
+  --sidebar-accent-foreground: var(--color-orange-200);
+  --sidebar-border: var(--color-brown-400);
+  --sidebar-ring: var(--color-orange-400);
 }
 
 /* -------------------------------------------------------------------------
