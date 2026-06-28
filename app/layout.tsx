@@ -59,6 +59,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${ozik.variable} ${vulf.variable} h-full`}
+      suppressHydrationWarning
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
