@@ -14,28 +14,8 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 
-const SOURCE_SVG = resolve(process.cwd(), "docs/app_daddy_logo.svg");
+const SOURCE_SVG = resolve(process.cwd(), "public/logos/logo-ads-stacked-barney.svg");
 const OUTPUT_TSX = resolve(process.cwd(), "components/brand/LogoMark.tsx");
-
-const BACKGROUND_FILL = "#F3F0EE";
-
-function stripBackgroundRect(svg: string): string {
-  // Match the <rect> element whose fill equals the baked background color.
-  const pattern = new RegExp(
-    `<rect[^>]*?fill="${BACKGROUND_FILL}"[^>]*/?>`,
-    "i",
-  );
-  const match = svg.match(pattern);
-
-  if (!match) {
-    throw new Error(
-      `prepare-logo: no <rect fill="${BACKGROUND_FILL}"/> found in source SVG. ` +
-        `The logo may have changed — inspect ${SOURCE_SVG} manually.`,
-    );
-  }
-
-  return svg.replace(pattern, "");
-}
 
 function toReactComponent(svg: string): string {
   const openTag = svg.match(/<svg[^>]*>/);
@@ -75,8 +55,7 @@ function main(): void {
   }
 
   const source = readFileSync(SOURCE_SVG, "utf8");
-  const transparent = stripBackgroundRect(source);
-  const component = toReactComponent(transparent);
+  const component = toReactComponent(source);
 
   const outDir = dirname(OUTPUT_TSX);
   if (!existsSync(outDir)) {
