@@ -26,6 +26,13 @@
  * only inside the semantic layer below, or for one-off brand surfaces.
  * ------------------------------------------------------------------------- */
 @theme {
+  /* brand palette */
+  --color-barney: #620b49;
+  --color-peach: #ffd5a8;
+  --color-pumpkin: #f88000;
+  --color-royal: #491e3d;
+  --color-oreo: #311e09;
+
   /* ash-grey — neutral foundation (matches logo's native warm grey) */
   --color-ash-grey-50: #f3f3f1;
   --color-ash-grey-100: #e7e7e4;
@@ -147,8 +154,8 @@
    * once a proper transparent vector logo replaces the raster trace.
    * See scripts/prepare-logo.ts for the matching workaround.
    * ----------------------------------------------------------------- */
-  --background: #f5f4f1;
-  --foreground: var(--color-ash-grey-950); /* body text */
+  --background: var(--color-oreo);
+  --foreground: var(--color-peach);
 
   --card: var(--color-ash-grey-50);
   --card-foreground: var(--color-ash-grey-950);
