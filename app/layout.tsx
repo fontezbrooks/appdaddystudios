@@ -1,16 +1,26 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const ozik = localFont({
+  src: "../public/fonts/OZIKSoft-Medium.woff2",
+  variable: "--font-ozik",
+  weight: "500",
+  display: "swap",
+});
+
+const vulf = localFont({
+  src: "../public/fonts/Vulf_Mono-Black_Italic_web.woff2",
+  variable: "--font-vulf",
+  weight: "900",
+  style: "italic",
   display: "swap",
 });
 
@@ -51,8 +61,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full`}
-      suppressHydrationWarning
+      className={`${inter.variable} ${ozik.variable} ${vulf.variable} h-full`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
