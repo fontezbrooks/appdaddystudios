@@ -139,14 +139,7 @@
  * To swap the brand palette, edit only this block and its .dark twin.
  * ------------------------------------------------------------------------- */
 :root {
-  /* -----------------------------------------------------------------
-   * TEMPORARY (2026-04-07): page background pinned to the logo's baked
-   * cream (#F5F4F1) so the logo's built-in background rect blends
-   * seamlessly with the page. Revert to `var(--color-ash-grey-50)`
-   * once a proper transparent vector logo replaces the raster trace.
-   * See scripts/prepare-logo.ts for the matching workaround.
-   * ----------------------------------------------------------------- */
-  --background: #f5f4f1;
+  --background: var(--color-ash-grey-50);
   --foreground: var(--color-ash-grey-950); /* body text */
 
   --card: var(--color-ash-grey-50);
