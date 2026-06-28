@@ -20,6 +20,40 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Testing
+
+The suite is **owned by the maintainer**, not the designer. Keep tests
+**resilient**: assert on behavior and semantic queries (`getByRole`,
+`aria-label`) — never on DOM structure, generated SVG internals
+(`components/brand/LogoMark.tsx` is auto-generated), or exact copy. This keeps
+tests stable across cosmetic redesigns where behavior is unchanged.
+
+| Command | What it runs |
+| --- | --- |
+| `bun run test` | Unit/component tests (Vitest + Testing Library, jsdom) |
+| `bun run test:watch` | Vitest in watch mode |
+| `bun run test:e2e` | E2E + a11y tests (Playwright, runs against a production build) |
+| `bun run test:e2e:ui` | Playwright UI mode (local debugging) |
+| `bun run typecheck` | `tsc --noEmit` |
+| `bun run lint` | ESLint |
+
+**Layout**
+
+- Unit/component: colocated `*.test.ts(x)` (`lib/`, `components/`, `scripts/`)
+- E2E + accessibility: `e2e/*.spec.ts` (Chromium + WebKit, axe-core)
+- Pure logic is extracted for testability — e.g. `scripts/transform-logo.ts`
+  holds the SVG→component transform; `scripts/prepare-logo.ts` is the CLI wrapper.
+
+First run needs browsers: `bunx playwright install chromium webkit`.
+
+### Continuous integration
+
+`.github/workflows/ci.yml` runs on every PR to `main` (and pushes to `main`):
+`lint`, `typecheck`, `unit`, `build`, and `e2e` jobs on `bun`. These are
+intended to be **required status checks** — enable branch protection on `main`
+once the pipeline has one green baseline run so a PR cannot merge with a
+failing check. A flaky test is treated as a bug (no retries-into-green).
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
