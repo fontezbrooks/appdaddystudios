@@ -1,4 +1,4 @@
-import { BrandLogo } from "@/components/brand/BrandLogo";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -11,7 +11,14 @@ export default function Home() {
         backgroundAttachment: "fixed",
       }}
     >
-      <BrandLogo className="w-[clamp(200px,40vw,480px)]" />
+      <Image
+        src="/logo-ads-fancywhite.png"
+        alt="App Daddy Studios"
+        width={480}
+        height={480}
+        className="w-[clamp(200px,40vw,480px)] h-auto"
+        priority
+      />
     </main>
   );
 }
