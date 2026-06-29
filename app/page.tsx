@@ -7,7 +7,7 @@ export default function Home() {
     <main
       className="flex min-h-screen flex-col items-center justify-center bg-background text-center"
       style={{
-        backgroundImage: "url('/gradient-tall-1.png')",
+        backgroundImage: "url('/website-bg.png')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
@@ -31,7 +31,7 @@ export default function Home() {
         </h1>
 
         <p
-          className="font-sans font-normal text-6xl text-white leading-tight"
+          className="font-sans font-normal text-4xl text-white leading-tight"
           style={{ textShadow: royalShadow }}
         >
           We build powerful custom tools for small businesses in days, not months.
