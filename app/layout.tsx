@@ -1,11 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Ubuntu } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const ubuntu = Ubuntu({
+  variable: "--font-ubuntu",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -58,7 +60,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${ozik.variable} ${vulf.variable} h-full`}
+      className={`${ubuntu.variable} ${ozik.variable} ${vulf.variable} h-full`}
       suppressHydrationWarning
     >
       <head>

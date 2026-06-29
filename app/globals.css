@@ -90,7 +90,7 @@
   /* ── Typography ──
      var() refs work here because @theme inline resolves at runtime.
      next/font classNames on <html> inject the actual font-face. */
-  --font-sans: var(--font-inter), "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-ubuntu), "Ubuntu", ui-sans-serif, system-ui, sans-serif;
   --font-heading: var(--font-ozik), "OZIK", ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-vulf), "Vulf Mono", ui-monospace, monospace;
 
