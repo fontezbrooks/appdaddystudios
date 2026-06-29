@@ -166,7 +166,7 @@
  * LAYER 3: SHADCN CONTRACT — light mode (default)
  * ------------------------------------------------------------------------- */
 :root {
-  --background: var(--color-oreo);
+  --background: var(--color-royal);
   --foreground: var(--color-orange-200); /* Peach on Oreo */
 
   --card: var(--color-brown-400);
@@ -215,7 +215,7 @@
  * LAYER 3: SHADCN CONTRACT — dark mode
  * ------------------------------------------------------------------------- */
 .dark {
-  --background: var(--color-oreo);
+  --background: var(--color-royal);
   --foreground: var(--color-orange-200); /* Peach on Oreo */
 
   --card: var(--color-brown-400);
