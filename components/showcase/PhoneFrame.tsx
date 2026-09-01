@@ -37,6 +37,11 @@ export function PhoneFrame({ src, alt, className }: PhoneFrameProps) {
           width={SCREENSHOT_WIDTH}
           height={SCREENSHOT_HEIGHT}
           sizes="240px"
+          // Eager (not lazy): a slide is mounted offscreen at ±2 and clipped
+          // by overflow-hidden, so lazy loading would defer its fetch until
+          // it is already sliding into view. No preload/priority hint, so it
+          // still queues behind above-the-fold resources.
+          loading="eager"
           // Native image drag-and-drop would hijack the carousel's pointer
           // drag on desktop (dragstart fires, pointer events stop).
           draggable={false}

@@ -27,13 +27,12 @@ type AppCarouselProps = {
   autoplayIntervalMs?: number;
 };
 
-/**
- * Signed distance of slide `i` from the active slide, wrapped so the
- * carousel loops: for 4 slides with active 0 -> offsets [0, 1, -2, -1].
- */
-function slideOffset(i: number, active: number, count: number): number {
-  const raw = (((i - active) % count) + count) % count;
-  return raw > count / 2 ? raw - count : raw;
+/** Slides rendered on each side of the active one (±1 visible, ±2 staged offscreen). */
+const RENDER_RADIUS = 2;
+
+/** Always-positive modulo. */
+function mod(n: number, m: number): number {
+  return ((n % m) + m) % m;
 }
 
 export function AppCarousel({
@@ -42,7 +41,13 @@ export function AppCarousel({
   autoplayIntervalMs = AUTOPLAY_INTERVAL_MS,
 }: AppCarouselProps) {
   const count = apps.length;
-  const [active, setActive] = useState(0);
+  // `cursor` is an unbounded integer, not wrapped to [0, count). Slides are
+  // keyed by their virtual index (cursor + offset), so keys stay continuous
+  // across wrap-around and every move animates between adjacent positions.
+  // Without this, the 4th of 4 slides would sweep from offset -1 to +2
+  // straight through the centre on every advance.
+  const [cursor, setCursor] = useState(0);
+  const active = mod(cursor, count);
   // Tracked separately so one condition ending cannot unpause while another
   // is still active (e.g. drag ends but pointer is still hovering).
   const [isHovered, setIsHovered] = useState(false);
@@ -54,17 +59,12 @@ export function AppCarousel({
   const didDragRef = useRef(false);
   const prefersReducedMotion = useReducedMotion();
 
-  const goTo = useCallback(
-    (delta: number) => setActive((i) => (((i + delta) % count) + count) % count),
-    [count],
-  );
-  const next = useCallback(() => goTo(1), [goTo]);
-  const prev = useCallback(() => goTo(-1), [goTo]);
-  const jumpTo = useCallback((i: number) => setActive(i), []);
+  const next = useCallback(() => setCursor((c) => c + 1), []);
+  const prev = useCallback(() => setCursor((c) => c - 1), []);
 
-  function handleSlideClick(i: number) {
+  function handleSlideClick(virtualIndex: number) {
     if (didDragRef.current) return;
-    jumpTo(i);
+    setCursor(virtualIndex);
   }
 
   const isAutoplayEnabled =
@@ -100,6 +100,11 @@ export function AppCarousel({
     ease: ease.outSoft,
   };
 
+  const virtualIndices = Array.from(
+    { length: RENDER_RADIUS * 2 + 1 },
+    (_, k) => cursor - RENDER_RADIUS + k,
+  );
+
   const navButtonClass =
     "rounded-full bg-brown-400/80 p-3 text-peach backdrop-blur-sm transition-colors hover:bg-brown-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-pumpkin cursor-pointer";
 
@@ -128,41 +133,48 @@ export function AppCarousel({
         }}
         onDragEnd={handleDragEnd}
       >
-        {apps.map((app, i) => {
-          const offset = slideOffset(i, active, count);
+        {virtualIndices.map((v) => {
+          const i = mod(v, count);
+          const app = apps[i];
+          const offset = v - cursor;
           const isActive = offset === 0;
           const isVisible = Math.abs(offset) <= 1;
           return (
-            <motion.div
-              key={app.slug}
+            // Centering lives on this plain wrapper. Framer writes an inline
+            // `transform` on the motion child, which would clobber a
+            // translate utility placed on the same element.
+            <div
+              key={v}
               role="group"
               aria-roledescription="slide"
               aria-label={`${i + 1} of ${count}`}
               aria-hidden={!isActive}
               data-active={isActive ? "true" : undefined}
+              style={{ zIndex: isActive ? 2 : 1 }}
               className={cn(
-                "absolute left-1/2 top-0 flex w-[240px] -translate-x-1/2 flex-col items-center gap-4",
+                "absolute left-1/2 top-0 w-[240px] -translate-x-1/2",
                 !isVisible && "pointer-events-none",
                 isVisible && !isActive && "cursor-pointer",
               )}
-              // onClick, not framer's onTap: onTap injects tabindex=0, which
-              // would make these aria-hidden slides focusable (axe violation).
-              onClick={isActive ? undefined : () => handleSlideClick(i)}
-              initial={false}
-              animate={{
-                x: offset * SLIDE_SPACING_PX,
-                scale: isActive ? 1 : SIDE_SCALE,
-                opacity: isVisible ? (isActive ? 1 : SIDE_OPACITY) : 0,
-                zIndex: isActive ? 2 : 1,
-              }}
-              transition={transition}
+              onClick={isActive ? undefined : () => handleSlideClick(v)}
             >
-              <PhoneFrame src={app.screenshot.src} alt={app.screenshot.alt} className="w-full" />
-              <div className="flex flex-col items-center gap-1 text-center">
-                <p className="font-heading text-3xl leading-none text-peach">{app.name}</p>
-                <p className="font-sans text-base text-white/80">{app.tagline}</p>
-              </div>
-            </motion.div>
+              <motion.div
+                className="flex flex-col items-center gap-4"
+                initial={false}
+                animate={{
+                  x: offset * SLIDE_SPACING_PX,
+                  scale: isActive ? 1 : SIDE_SCALE,
+                  opacity: isVisible ? (isActive ? 1 : SIDE_OPACITY) : 0,
+                }}
+                transition={transition}
+              >
+                <PhoneFrame src={app.screenshot.src} alt={app.screenshot.alt} className="w-full" />
+                <div className="flex flex-col items-center gap-1 text-center">
+                  <p className="font-heading text-3xl leading-none text-peach">{app.name}</p>
+                  <p className="font-sans text-base text-white/80">{app.tagline}</p>
+                </div>
+              </motion.div>
+            </div>
           );
         })}
       </motion.div>

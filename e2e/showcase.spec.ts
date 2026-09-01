@@ -20,7 +20,12 @@ test.describe("app showcase", () => {
     await page.goto("/");
     await expect(carousel(page)).toBeVisible();
     await expect(carousel(page)).toHaveAttribute("aria-roledescription", "carousel");
-    await expect(carousel(page).locator("[aria-roledescription='slide']")).toHaveCount(4);
+    for (const n of [1, 2, 3, 4]) {
+      await expect(
+        carousel(page).locator(`[aria-roledescription='slide'][aria-label='${n} of 4']`).first(),
+      ).toBeAttached();
+    }
+    await expect(activeSlide(page)).toHaveCount(1);
     await expect(activeSlide(page)).toHaveAttribute("aria-label", "1 of 4");
   });
 
@@ -69,7 +74,7 @@ test.describe("app showcase", () => {
     await page.goto("/");
     await carousel(page).hover();
     // Side slides are aria-hidden, so query the element directly rather than by role.
-    await carousel(page).locator("[aria-label='2 of 4'] img").click();
+    await carousel(page).locator("[aria-label='2 of 4'] img").first().click();
     await expect(activeSlide(page)).toHaveAttribute("aria-label", "2 of 4");
   });
 

@@ -45,13 +45,31 @@ describe("AppCarousel", () => {
     vi.useRealTimers();
   });
 
-  it("exposes an accessible carousel region with one slide per app", () => {
+  it("exposes an accessible carousel region covering every app", () => {
     renderCarousel();
     expect(screen.getByRole("region", { name: "Test apps" })).toHaveAttribute(
       "aria-roledescription",
       "carousel",
     );
-    expect(screen.getAllByRole("group", { hidden: true })).toHaveLength(apps.length);
+    const labels = screen
+      .getAllByRole("group", { hidden: true })
+      .map((el) => el.getAttribute("aria-label"));
+    expect(new Set(labels)).toEqual(new Set(["1 of 3", "2 of 3", "3 of 3"]));
+  });
+
+  it("exposes exactly one active slide at a time", () => {
+    renderCarousel();
+    const active = screen
+      .getAllByRole("group", { hidden: true })
+      .filter((el) => el.getAttribute("data-active") === "true");
+    expect(active).toHaveLength(1);
+  });
+
+  it("keeps advancing past the wrap point without losing position", () => {
+    renderCarousel();
+    const nextBtn = screen.getByRole("button", { name: "Next app" });
+    for (let step = 0; step < 7; step += 1) fireEvent.click(nextBtn);
+    expect(activeSlide()).toHaveAccessibleName("2 of 3");
   });
 
   it("shows the first app as active on load with its name and tagline", () => {
