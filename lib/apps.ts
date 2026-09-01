@@ -37,7 +37,7 @@ export const showcaseApps: readonly ShowcaseApp[] = [
   {
     slug: "syncdaddy",
     name: "syncDaddy",
-    tagline: "Keep every device in step.", // TODO: confirm copy
+    tagline: "Unified smart light control across multiple brands", 
     screenshot: {
       src: "/apps/syncdaddy.webp",
       alt: "syncDaddy app on an iPhone",
@@ -46,7 +46,7 @@ export const showcaseApps: readonly ShowcaseApp[] = [
   {
     slug: "gulch",
     name: "Gulch",
-    tagline: "Built for the trail.", // TODO: confirm copy
+    tagline: "Official App for Gulch Magazine covering Atlanta's visual arts scene", 
     screenshot: {
       src: "/apps/gulch.webp",
       alt: "Gulch app on an iPhone",
@@ -55,7 +55,7 @@ export const showcaseApps: readonly ShowcaseApp[] = [
   {
     slug: "southern-shmooze",
     name: "The Southern Shmooze",
-    tagline: "Southern hospitality, in your pocket.", // TODO: confirm copy
+    tagline: "An Atlanta community connecting homeowners with trusted local service businesses", 
     screenshot: {
       src: "/apps/southern-shmooze.webp",
       alt: "The Southern Shmooze app on an iPhone",
