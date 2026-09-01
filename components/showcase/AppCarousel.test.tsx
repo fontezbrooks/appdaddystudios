@@ -120,6 +120,31 @@ describe("AppCarousel", () => {
     expect(activeSlide()).toHaveAccessibleName("1 of 3");
   });
 
+  it("stays paused when the pointer leaves while a control still has focus", () => {
+    renderCarousel();
+    const region = screen.getByRole("region", { name: "Test apps" });
+    fireEvent.mouseEnter(region);
+    fireEvent.focus(screen.getByRole("button", { name: "Next app" }));
+    fireEvent.mouseLeave(region);
+    act(() => {
+      vi.advanceTimersByTime(INTERVAL * 2);
+    });
+    expect(activeSlide()).toHaveAccessibleName("1 of 3");
+  });
+
+  it("stays paused when focus leaves while the pointer is still hovering", () => {
+    renderCarousel();
+    const region = screen.getByRole("region", { name: "Test apps" });
+    const nextBtn = screen.getByRole("button", { name: "Next app" });
+    fireEvent.focus(nextBtn);
+    fireEvent.mouseEnter(region);
+    fireEvent.blur(nextBtn);
+    act(() => {
+      vi.advanceTimersByTime(INTERVAL * 2);
+    });
+    expect(activeSlide()).toHaveAccessibleName("1 of 3");
+  });
+
   it("does not autoplay when reduced motion is preferred but still responds to controls", () => {
     mockReducedMotion(true);
     renderCarousel();

@@ -5,7 +5,7 @@
  * `public/apps/`. Nothing else needs to change.
  *
  * Screenshots are portrait phone captures at SCREENSHOT_WIDTH × SCREENSHOT_HEIGHT
- * (iPhone 14 Pro). Placeholders are SVGs at that ratio until real captures land.
+ * (iPhone 14 Pro), encoded as WebP and kept under ~300 KB each.
  */
 
 export const SCREENSHOT_WIDTH = 1170;
@@ -30,7 +30,7 @@ export const showcaseApps: readonly ShowcaseApp[] = [
     name: "parkDaddy",
     tagline: "Parking, sorted in one tap.", // TODO: confirm copy
     screenshot: {
-      src: "/apps/parkdaddy.svg",
+      src: "/apps/parkdaddy.webp",
       alt: "parkDaddy app on an iPhone",
     },
   },
@@ -39,7 +39,7 @@ export const showcaseApps: readonly ShowcaseApp[] = [
     name: "syncDaddy",
     tagline: "Keep every device in step.", // TODO: confirm copy
     screenshot: {
-      src: "/apps/syncdaddy.svg",
+      src: "/apps/syncdaddy.webp",
       alt: "syncDaddy app on an iPhone",
     },
   },
@@ -48,7 +48,7 @@ export const showcaseApps: readonly ShowcaseApp[] = [
     name: "Gulch",
     tagline: "Built for the trail.", // TODO: confirm copy
     screenshot: {
-      src: "/apps/gulch.svg",
+      src: "/apps/gulch.webp",
       alt: "Gulch app on an iPhone",
     },
   },
@@ -57,7 +57,7 @@ export const showcaseApps: readonly ShowcaseApp[] = [
     name: "The Southern Shmooze",
     tagline: "Southern hospitality, in your pocket.", // TODO: confirm copy
     screenshot: {
-      src: "/apps/southern-shmooze.svg",
+      src: "/apps/southern-shmooze.webp",
       alt: "The Southern Shmooze app on an iPhone",
     },
   },

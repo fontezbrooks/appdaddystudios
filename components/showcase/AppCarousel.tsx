@@ -41,7 +41,12 @@ export function AppCarousel({
 }: AppCarouselProps) {
   const count = apps.length;
   const [active, setActive] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  // Tracked separately so one condition ending cannot unpause while another
+  // is still active (e.g. drag ends but pointer is still hovering).
+  const [isHovered, setIsHovered] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const isPaused = isHovered || isFocused || isDragging;
   const prefersReducedMotion = useReducedMotion();
 
   const goTo = useCallback(
@@ -71,7 +76,7 @@ export function AppCarousel({
   }
 
   function handleDragEnd(_: unknown, info: PanInfo) {
-    setIsPaused(false);
+    setIsDragging(false);
     if (info.offset.x < -DRAG_THRESHOLD_PX) next();
     else if (info.offset.x > DRAG_THRESHOLD_PX) prev();
   }
@@ -90,17 +95,17 @@ export function AppCarousel({
       aria-label={label}
       className="flex w-full flex-col items-center gap-6"
       onKeyDown={handleKeyDown}
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onFocus={() => setIsPaused(true)}
-      onBlur={() => setIsPaused(false)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
     >
       <motion.div
-        className="relative h-[640px] w-full cursor-grab select-none overflow-hidden active:cursor-grabbing"
+        className="relative h-[600px] w-full cursor-grab select-none overflow-hidden active:cursor-grabbing"
         drag={count > 1 ? "x" : false}
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={0.2}
-        onDragStart={() => setIsPaused(true)}
+        onDragStart={() => setIsDragging(true)}
         onDragEnd={handleDragEnd}
       >
         {apps.map((app, i) => {
@@ -128,12 +133,7 @@ export function AppCarousel({
               }}
               transition={transition}
             >
-              <PhoneFrame
-                src={app.screenshot.src}
-                alt={app.screenshot.alt}
-                preload={i === 0}
-                className="w-full"
-              />
+              <PhoneFrame src={app.screenshot.src} alt={app.screenshot.alt} className="w-full" />
               <div className="flex flex-col items-center gap-1 text-center">
                 <p className="font-heading text-3xl leading-none text-peach">{app.name}</p>
                 <p className="font-sans text-base text-white/80">{app.tagline}</p>
