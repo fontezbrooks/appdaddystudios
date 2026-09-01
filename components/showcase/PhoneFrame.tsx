@@ -37,7 +37,11 @@ export function PhoneFrame({ src, alt, className }: PhoneFrameProps) {
           width={SCREENSHOT_WIDTH}
           height={SCREENSHOT_HEIGHT}
           sizes="240px"
-          className="h-full w-full object-cover"
+          // Native image drag-and-drop would hijack the carousel's pointer
+          // drag on desktop (dragstart fires, pointer events stop).
+          draggable={false}
+          onDragStart={(e) => e.preventDefault()}
+          className="h-full w-full select-none object-cover"
         />
       </div>
     </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion, type PanInfo } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { duration, ease } from "@/lib/tokens";
@@ -12,6 +12,8 @@ import { PhoneFrame } from "./PhoneFrame";
 export const AUTOPLAY_INTERVAL_MS = 4000;
 /** Horizontal drag distance (px) needed to change slide. */
 const DRAG_THRESHOLD_PX = 50;
+/** Release velocity (px/s) that counts as a flick even under the distance threshold. */
+const FLICK_VELOCITY_PX_S = 500;
 /** Horizontal distance between adjacent phone centres (px). */
 const SLIDE_SPACING_PX = 220;
 const SIDE_SCALE = 0.82;
@@ -47,6 +49,9 @@ export function AppCarousel({
   const [isFocused, setIsFocused] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const isPaused = isHovered || isFocused || isDragging;
+  // A drag that ends over a side phone also fires `click` on it. This flag
+  // lets the click handler tell a real click from the tail of a drag.
+  const didDragRef = useRef(false);
   const prefersReducedMotion = useReducedMotion();
 
   const goTo = useCallback(
@@ -55,6 +60,12 @@ export function AppCarousel({
   );
   const next = useCallback(() => goTo(1), [goTo]);
   const prev = useCallback(() => goTo(-1), [goTo]);
+  const jumpTo = useCallback((i: number) => setActive(i), []);
+
+  function handleSlideClick(i: number) {
+    if (didDragRef.current) return;
+    jumpTo(i);
+  }
 
   const isAutoplayEnabled =
     autoplayIntervalMs > 0 && !prefersReducedMotion && !isPaused && count > 1;
@@ -77,8 +88,11 @@ export function AppCarousel({
 
   function handleDragEnd(_: unknown, info: PanInfo) {
     setIsDragging(false);
-    if (info.offset.x < -DRAG_THRESHOLD_PX) next();
-    else if (info.offset.x > DRAG_THRESHOLD_PX) prev();
+    // One slide per gesture. Distance or a quick flick both count.
+    const { x: distance } = info.offset;
+    const { x: velocity } = info.velocity;
+    if (distance < -DRAG_THRESHOLD_PX || velocity < -FLICK_VELOCITY_PX_S) next();
+    else if (distance > DRAG_THRESHOLD_PX || velocity > FLICK_VELOCITY_PX_S) prev();
   }
 
   const transition = {
@@ -105,7 +119,13 @@ export function AppCarousel({
         drag={count > 1 ? "x" : false}
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={0.2}
-        onDragStart={() => setIsDragging(true)}
+        onPointerDown={() => {
+          didDragRef.current = false;
+        }}
+        onDragStart={() => {
+          didDragRef.current = true;
+          setIsDragging(true);
+        }}
         onDragEnd={handleDragEnd}
       >
         {apps.map((app, i) => {
@@ -123,7 +143,11 @@ export function AppCarousel({
               className={cn(
                 "absolute left-1/2 top-0 flex w-[240px] -translate-x-1/2 flex-col items-center gap-4",
                 !isVisible && "pointer-events-none",
+                isVisible && !isActive && "cursor-pointer",
               )}
+              // onClick, not framer's onTap: onTap injects tabindex=0, which
+              // would make these aria-hidden slides focusable (axe violation).
+              onClick={isActive ? undefined : () => handleSlideClick(i)}
               initial={false}
               animate={{
                 x: offset * SLIDE_SPACING_PX,

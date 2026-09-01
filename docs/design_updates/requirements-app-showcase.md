@@ -30,7 +30,7 @@ builds trust before hitting "Let's talk".
 - FR1. Render one slide per app: phone frame containing portrait screenshot, app name, tagline.
 - FR2. Autoplay advances slides on an interval. Pauses on hover and on focus-within. Resumes on leave.
 - FR3. Infinite loop in both directions.
-- FR4. Pointer drag and touch swipe change slides.
+- FR4. Pointer drag and touch swipe change slides. One slide per gesture; a quick flick counts even under the distance threshold. Clicking a side phone brings it to the centre. Vertical touch scroll over the carousel still scrolls the page.
 - FR5. Keyboard: arrow keys change slides when carousel is focused. Prev/next buttons are real `<button>` elements with accessible labels.
 - FR6. Placeholder screenshots at final aspect ratio until real captures exist. Swapping in real images requires changing only the data array.
 - FR7. Data array holds `name`, `tagline`, `screenshot` (src + alt). Optional `href` for store/web link (unused for V1 unless provided).

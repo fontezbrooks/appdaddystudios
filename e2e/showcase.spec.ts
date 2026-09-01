@@ -42,6 +42,65 @@ test.describe("app showcase", () => {
     await expect(activeSlide(page)).toHaveAttribute("aria-label", "1 of 4");
   });
 
+  test("desktop: mouse drag over the phone screenshot changes slide", async ({ page }) => {
+    await page.goto("/");
+    // Carousel is below the fold at the default viewport; mouse events at
+    // off-screen coordinates hit nothing. Hovering also pauses autoplay so
+    // the assertions below are deterministic.
+    await carousel(page).scrollIntoViewIfNeeded();
+    const box = await activeSlide(page).getByRole("img").boundingBox();
+    if (!box) throw new Error("active slide image has no bounding box");
+    const cx = box.x + box.width / 2;
+    const cy = box.y + box.height / 2;
+    await page.mouse.move(cx, cy);
+    await page.mouse.down();
+    await page.mouse.move(cx - 150, cy, { steps: 10 });
+    await page.mouse.up();
+    await expect(activeSlide(page)).toHaveAttribute("aria-label", "2 of 4");
+
+    await page.mouse.move(cx, cy);
+    await page.mouse.down();
+    await page.mouse.move(cx + 150, cy, { steps: 10 });
+    await page.mouse.up();
+    await expect(activeSlide(page)).toHaveAttribute("aria-label", "1 of 4");
+  });
+
+  test("desktop: clicking a side phone brings it to the centre", async ({ page }) => {
+    await page.goto("/");
+    await carousel(page).hover();
+    // Side slides are aria-hidden, so query the element directly rather than by role.
+    await carousel(page).locator("[aria-label='2 of 4'] img").click();
+    await expect(activeSlide(page)).toHaveAttribute("aria-label", "2 of 4");
+  });
+
+  test("mobile: touch swipe changes slide", async ({ browser, browserName }) => {
+    // Synthetic multi-point touch needs CDP, which only Chromium exposes.
+    test.skip(browserName !== "chromium", "touch swipe injection requires CDP (Chromium only)");
+    const context = await browser.newContext({
+      viewport: { width: 390, height: 844 },
+      hasTouch: true,
+      isMobile: true,
+    });
+    const page = await context.newPage();
+    await page.goto("/");
+    await carousel(page).scrollIntoViewIfNeeded();
+    const box = await activeSlide(page).getByRole("img").boundingBox();
+    if (!box) throw new Error("active slide image has no bounding box");
+    const x = box.x + box.width / 2;
+    const y = box.y + box.height / 2;
+    const cdp = await context.newCDPSession(page);
+    await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x, y }] });
+    for (let step = 1; step <= 8; step += 1) {
+      await cdp.send("Input.dispatchTouchEvent", {
+        type: "touchMove",
+        touchPoints: [{ x: x - step * 20, y }],
+      });
+    }
+    await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+    await expect(activeSlide(page)).toHaveAttribute("aria-label", "2 of 4");
+    await context.close();
+  });
+
   test("autoplays when motion is allowed", async ({ page }) => {
     await page.goto("/");
     await expect(activeSlide(page)).toHaveAttribute("aria-label", "2 of 4", {
