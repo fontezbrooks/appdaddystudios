@@ -28,5 +28,11 @@ export const ease = {
   inOutSoft: [0.65, 0, 0.35, 1] as const,
 } as const;
 
+/**
+ * Hard offset text shadow in Royal, used on display copy over the
+ * photographic background so it reads as printed rather than floating.
+ */
+export const royalShadow = "2px 2px 0px #491e3d";
+
 export type Duration = keyof typeof duration;
 export type Ease = keyof typeof ease;

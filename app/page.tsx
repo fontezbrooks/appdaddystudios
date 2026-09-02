@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { useState } from "react";
-
-const royalShadow = "2px 2px 0px #491e3d";
+import { AppShowcase } from "@/components/showcase/AppShowcase";
+import { royalShadow } from "@/lib/tokens";
 
 type FormState = "idle" | "sending" | "success" | "error";
 
@@ -77,6 +77,9 @@ export default function Home() {
           We build powerful custom tools for small businesses in days, not months.
           All at an affordable price.
         </p>
+
+        {/* App showcase */}
+        <AppShowcase />
 
         {/* Contact Form */}
         {formState === "success" ? (
