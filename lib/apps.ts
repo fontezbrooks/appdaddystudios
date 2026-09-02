@@ -46,7 +46,7 @@ export const showcaseApps: readonly ShowcaseApp[] = [
   {
     slug: "gulch",
     name: "Gulch",
-    tagline: "Official App for Gulch Magazine covering Atlanta's visual arts scene", 
+    tagline: "Official App for Gulch Magazine covering Atlanta's visual arts", 
     screenshot: {
       src: "/apps/gulch.webp",
       alt: "Gulch app on an iPhone",
@@ -55,7 +55,7 @@ export const showcaseApps: readonly ShowcaseApp[] = [
   {
     slug: "southern-shmooze",
     name: "The Southern Shmooze",
-    tagline: "An Atlanta community connecting homeowners with trusted local service businesses", 
+    tagline: "Official Southern Shmooze App", 
     screenshot: {
       src: "/apps/southern-shmooze.webp",
       alt: "The Southern Shmooze app on an iPhone",
